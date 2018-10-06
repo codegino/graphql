@@ -6,9 +6,45 @@ import { GraphQLServer } from 'graphql-yoga';
 // rating - number as float (optional)
 // inStock - boolean
 
+const posts = [{
+  id: '1',
+  title: 'Post 1',
+  body: 'Body 1',
+  published: true
+}, {
+  id: '2',
+  title: 'Post 2',
+  body: 'Body 3',
+  published: false 
+}, {
+  id: '3',
+  title: 'Post 3',
+  body: 'Body 3',
+  published: true
+}]
+
+const users = [{
+  id: '1',
+  name: 'Carlo',
+  email: 'carlo@example.com',
+  age: 27
+},{
+  id: '2',
+  name: 'Gino',
+  email: 'gino@example.com',
+  age: 28
+},{
+  id: '1',
+  name: 'Catapang',
+  email: 'catapang@example.com',
+  age: 29
+}]
+
 // Type Definitions (schema)
 const typeDefs = `
   type Query {
+    users(query: String): [User!]!
+    posts(query: String): [Post!]!
     me: User!
     post: Post!
   }
@@ -31,6 +67,18 @@ const typeDefs = `
 // Resolvers
 const resolvers = {
   Query: {
+    users(parent, args, ctx, info) {
+      if (!args.query) {
+        return users
+      }
+      return users.filter(user => user.name.toLowerCase().includes(args.query.toLowerCase()))
+    },
+    posts(parent, args, ctx, info) {
+      if (!args.query) {
+        return posts 
+      }
+      return posts.filter(post => post.title.toLowerCase().includes(args.query.toLowerCase()))
+    },
     me() {
       return  {
         id: '123456',
