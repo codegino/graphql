@@ -4,17 +4,20 @@ const posts = [{
   id: '1',
   title: 'Post 1',
   body: 'Body 1',
-  published: true
+  published: true,
+  author: '1'
 }, {
   id: '2',
   title: 'Post 2',
   body: 'Body 3',
-  published: false 
+  published: false,
+  author: '1'
 }, {
   id: '3',
   title: 'Post 3',
   body: 'Body 3',
-  published: true
+  published: true,
+  author: '2'
 }]
 
 const users = [{
@@ -54,7 +57,8 @@ const typeDefs = `
     id: ID!
     title: String!
     body: String!
-    published: String!
+    published: String!,
+    author: User!
   }
 `
 
@@ -93,6 +97,11 @@ const resolvers = {
         body: 'Post Body',
         published: '12-02-1990'
       }
+    }
+  },
+  Post: {
+    author(parent, args, ctx, info) {
+      return users.find(user => user.id === parent.author)
     }
   }
 }
