@@ -1,11 +1,5 @@
 import { GraphQLServer } from 'graphql-yoga';
 
-// title - String product name
-// price - number as float
-// releaseYear - number as int (optional)
-// rating - number as float (optional)
-// inStock - boolean
-
 const posts = [{
   id: '1',
   title: 'Post 1',
@@ -77,7 +71,12 @@ const resolvers = {
       if (!args.query) {
         return posts 
       }
-      return posts.filter(post => post.title.toLowerCase().includes(args.query.toLowerCase()))
+
+      return posts.filter(post => {
+        const isTitleMatch = post.title.toLowerCase().includes(args.query.toLowerCase())
+        const isBodyMatch = post.body.toLowerCase().includes(args.query.toLowerCase())
+        return isTitleMatch || isBodyMatch
+      })
     },
     me() {
       return  {
