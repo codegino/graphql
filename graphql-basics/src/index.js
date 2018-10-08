@@ -37,6 +37,20 @@ const users = [{
   age: 29
 }]
 
+const comments = [{
+  id: '1',
+  text: 'Comment 1'
+},{
+  id: '2',
+  text: 'Comment 2'
+},{
+  id: '3',
+  text: 'Comment 3'
+},{
+  id: '4',
+  text: 'Comment 4'
+}]
+
 // Type Definitions (schema)
 const typeDefs = `
   type Query {
@@ -44,6 +58,12 @@ const typeDefs = `
     posts(query: String): [Post!]!
     me: User!
     post: Post!
+    comments: [Comment!]!
+  }
+
+  type Comment {
+    id: ID!
+    text: String!
   }
 
   type User {
@@ -51,6 +71,7 @@ const typeDefs = `
     name: String!
     email: String!
     age: Int
+    posts: [Post!]!
   }
 
   type Post {
@@ -82,6 +103,9 @@ const resolvers = {
         return isTitleMatch || isBodyMatch
       })
     },
+    comments() {
+      return comments
+    },
     me() {
       return  {
         id: '123456',
@@ -102,6 +126,11 @@ const resolvers = {
   Post: {
     author(parent, args, ctx, info) {
       return users.find(user => user.id === parent.author)
+    }
+  },
+  User: {
+    posts(parent, args, ctx, info) {
+      return posts.filter(post => post.author === parent.id)
     }
   }
 }
