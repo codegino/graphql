@@ -76,6 +76,7 @@ const typeDefs = `
     createComment(data: CreateCommentInput): Comment!
     deleteUser(id: ID!): User!
     deletePost(id: ID!): Post!
+    deleteComment(id: ID!): Comment!
   }
 
   input CreateUserInput {
@@ -224,7 +225,7 @@ const resolvers = {
 
       return deletedPost;
     },
-    createComment(parent, args, ctx, infro) {
+    createComment(parent, args, ctx, info) {
       const userExists = users.some(user => user.id === args.data.author)
       const postExists = posts.some(post => post.id === args.data.post && post.published)
 
@@ -238,6 +239,17 @@ const resolvers = {
       comments.push(comment);
 
       return comment
+    },
+    deleteComment(parent, args, ctx, info) {
+      const commentIndex = comments.findIndex(comment => comment.id === args.id)
+
+      if(commentIndex === -1) {
+        throw new Error('Comment does not exists.')
+      }
+
+      const deletedComment = comments.splice(commentIndex, 1)[0];
+
+      return deletedComment;
     }
   },
   Post: {
